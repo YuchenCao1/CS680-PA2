@@ -242,6 +242,34 @@ class Sketch(CanvasBase):
         # The eye rotation only needs to work correctly when the creature is looking toward the viewer.
         # You do not need to account for other camera orientations.
         # Try to implement this using quaternions for additional credit!
+        width, height = self.size
+
+        x_ndc = (2.0 * x) / width - 1.0
+        y_ndc = 1.0 - (2.0 * y) / height
+
+        max_angle = 25
+
+        angle_u = x_ndc * max_angle
+        angle_v = y_ndc * max_angle
+
+        angle_u = max(-max_angle, min(max_angle, angle_u))
+        angle_v = max(-max_angle, min(max_angle, angle_v))
+
+        self.cDict['eye1'].setCurrentAngle(0, self.cDict['eye1'].uAxis)
+        self.cDict['eye1'].setCurrentAngle(0, self.cDict['eye1'].vAxis)
+        self.cDict['eye1'].setCurrentAngle(0, self.cDict['eye1'].wAxis)
+
+        self.cDict['eye2'].setCurrentAngle(0, self.cDict['eye2'].uAxis)
+        self.cDict['eye2'].setCurrentAngle(0, self.cDict['eye2'].vAxis)
+        self.cDict['eye2'].setCurrentAngle(0, self.cDict['eye2'].wAxis)
+
+        self.cDict['eye1'].setCurrentAngle(-angle_v, self.cDict['eye1'].uAxis)
+        self.cDict['eye1'].setCurrentAngle(angle_u, self.cDict['eye1'].vAxis)
+
+        self.cDict['eye2'].setCurrentAngle(-angle_v, self.cDict['eye2'].uAxis)
+        self.cDict['eye2'].setCurrentAngle(angle_u, self.cDict['eye2'].vAxis)
+
+        self.update()
         return
 
     def Interrupt_Scroll(self, wheelRotation):
@@ -461,8 +489,12 @@ class Sketch(CanvasBase):
             self.update()
         elif chr(keycode) == '5':
             # Pose 5: Turn head
-            head = self.cDict['head']
-            head.setCurrentAngle(30, head.vAxis)
+            eye1 = self.cDict['eye1']
+            eye2 = self.cDict['eye2']
+            eye1.setCurrentAngle(-25, eye1.vAxis)
+            eye2.setCurrentAngle(-25, eye2.vAxis)
+            eye1.setCurrentAngle(25, eye1.uAxis)
+            eye2.setCurrentAngle(25, eye2.uAxis)
             self.update()
 
 

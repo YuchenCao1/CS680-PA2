@@ -51,17 +51,31 @@ class ModelLinkage(Component):
         #      so that creature won't intersect itself or bend in unnatural ways
         #   2. Orientation of joint rotations for the left and right parts should mirror each other.
 
-        abdomen = Sphere(Point((0, 0, 0)), shaderProg, size=[0.8, 0.8, 0.8], color=Ct.DARKORANGE1, limb=False)
-        abdomen.setDefaultColor(Ct.DARKORANGE1)
+        abdomen = Sphere(Point((0, 0, 0)), shaderProg, size=[0.8, 0.8, 0.8], color=Ct.DARKORANGE2, limb=False)
 
         head = Sphere(Point((0, 0, -0.6)), shaderProg, size=[0.5, 0.5, 0.5], color=Ct.DARKORANGE1, limb=False)
         head.setRotateExtent(head.vAxis, -30, 30)
+        head.setRotateExtent(head.uAxis, -30, 30)
+        head.setRotateExtent(head.wAxis, -30, 30)
         abdomen.addChild(head)
 
-        eye1 = Sphere(Point((0.08, 0.2, -0.4)), shaderProg, size=[0.08, 0.08, 0.05], color=Ct.BLACK, limb=False)
-        eye2 = Sphere(Point((-0.08, 0.2, -0.4)), shaderProg, size=[0.08, 0.08, 0.05], color=Ct.BLACK, limb=False)
-        eye1.setRotateExtent(eye1.uAxis, -15, 15)
-        eye2.setRotateExtent(eye2.uAxis, -15, 15)
+        eye1 = Sphere(Point((0.08, 0.2, -0.4)), shaderProg, size=[0.08, 0.08, 0.05], color=Ct.WHITE, limb=False)
+        eye2 = Sphere(Point((-0.08, 0.2, -0.4)), shaderProg, size=[0.08, 0.08, 0.05], color=Ct.WHITE, limb=False)
+        eye1.setRotateExtent(eye1.uAxis, -25, 25)
+        eye2.setRotateExtent(eye2.uAxis, -25, 25)
+        eye1.setRotateExtent(eye1.vAxis, -25, 25)
+        eye2.setRotateExtent(eye2.vAxis, -25, 25)
+        eye1.setRotateExtent(eye1.wAxis, -25, 25)
+        eye2.setRotateExtent(eye2.wAxis, -25, 25)
+
+        pupil_offset = -0.04
+        pupil_size = [0.04, 0.04, 0.03]
+
+        pupil1 = Sphere(Point((0, 0, pupil_offset)), shaderProg, size=pupil_size, color=Ct.BLACK, limb=False)
+        pupil2 = Sphere(Point((0, 0, pupil_offset)), shaderProg, size=pupil_size, color=Ct.BLACK, limb=False)
+
+        eye1.addChild(pupil1)
+        eye2.addChild(pupil2)
 
         fang1 = Cone(Point((0.04, 0.05, -0.55)), shaderProg, size=[0.02, 0.02, 0.1], color=Ct.RED, limb=False)
         fang2 = Cone(Point((-0.04, 0.05, -0.55)), shaderProg, size=[0.02, 0.02, 0.1], color=Ct.RED, limb=False)
@@ -74,8 +88,8 @@ class ModelLinkage(Component):
         head.addChild(fang1)
         head.addChild(fang2)
 
-        stripe1 = Cylinder(Point((0, 0, -0.1)), shaderProg, size=[0.77, 0.77, 0.07], color=Ct.BLACK, limb=False)
-        stripe2 = Cylinder(Point((0, 0, 0.2)), shaderProg, size=[0.77, 0.77, 0.07], color=Ct.BLACK, limb=False)
+        stripe1 = Cylinder(Point((0, 0, -0.15)), shaderProg, size=[0.74, 0.74, 0.07], color=Ct.BLACK, limb=False)
+        stripe2 = Cylinder(Point((0, 0, 0.15)), shaderProg, size=[0.74, 0.74, 0.07], color=Ct.BLACK, limb=False)
         abdomen.addChild(stripe1)
         abdomen.addChild(stripe2)
 
@@ -90,6 +104,7 @@ class ModelLinkage(Component):
             leg = self.create_leg(shaderProg, Ct.DARKORANGE2, Ct.DARKORANGE3)
             angle = 20 + (i + 1) * 25
             leg.setCurrentAngle(angle, abdomen.uAxis)
+            leg.setRotateExtent(leg.uAxis, angle - 10, angle + 10)
             legs.append(leg)
             self.initial_leg_angles.append(angle)
             leg_groupLeft.addChild(leg)
@@ -98,6 +113,7 @@ class ModelLinkage(Component):
             leg = self.create_leg(shaderProg, Ct.DARKORANGE2, Ct.DARKORANGE3)
             angle = 340 - (i - 4 + 1) * 25
             leg.setCurrentAngle(angle, abdomen.uAxis)
+            leg.setRotateExtent(leg.uAxis, angle - 10, angle + 10)
             legs.append(leg)
             self.initial_leg_angles.append(angle)
             leg_groupRight.addChild(leg)
@@ -126,11 +142,13 @@ class ModelLinkage(Component):
         self.fang2 = fang2
 
     def create_leg(self, shaderProg, color1, color2):
-        upper_leg = Cylinder(Point((0.0, 0, 0.6)), shaderProg, [0.05, 0.05, 0.6], color=color1)
-        upper_leg.setRotateExtent(upper_leg.vAxis, -45, 45)
+        upper_leg = Cylinder(Point((0.0, 0, 0.6)), shaderProg, [0.06, 0.06, 0.6], color=color1)
+        upper_leg.setRotateExtent(upper_leg.vAxis, -30, 30)
 
         lower_leg = Cylinder(Point((0.0, 0, 0.3)), shaderProg, [0.05, 0.05, 1.2], color=color2)
-        lower_leg.setRotateExtent(lower_leg.vAxis, -30, 60)
+        lower_leg.setRotateExtent(lower_leg.vAxis, -30, 30)
+
+
 
         upper_leg.addChild(lower_leg)
         return upper_leg
