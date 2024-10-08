@@ -154,16 +154,16 @@ class Sketch(CanvasBase):
         # and self.components should refer to your model's components.
         # Optionally, you can create a dictionary (self.cDict) to index your model's components by name.
 
-        model = ModelLinkage(self, Point((0, 0, 0)), self.shaderProg)
+        self.model = ModelLinkage(self, Point((0, 0, 0)), self.shaderProg)
         axes = ModelAxes(self, Point((-1, -1, -1)), self.shaderProg)
 
         self.topLevelComponent.clear()
-        self.topLevelComponent.addChild(model)
+        self.topLevelComponent.addChild(self.model)
         self.topLevelComponent.addChild(axes)
         self.topLevelComponent.initialize()
 
-        self.components = model.componentList
-        self.cDict = model.componentDict
+        self.components = self.model.componentList
+        self.cDict = self.model.componentDict
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
@@ -432,11 +432,37 @@ class Sketch(CanvasBase):
             self.resetView()
         if chr(keycode) in "R":
             # reset everything
-            for c in self.components:
-                c.reset()
+            self.model.reset()
             self.resetView()
             self.select_obj_index = -1
             self.select_axis_index = -1
+            self.update()
+        if chr(keycode) == '1':
+            # Pose 1: Back to origin pose
+            self.model.reset()
+            self.update()
+        elif chr(keycode) == '2':
+            # Pose 2: Raise left legs
+            for i in range(4):
+                leg_upper = self.cDict[f"leg{i + 1}_upper"]
+                leg_upper.setCurrentAngle(30, leg_upper.vAxis)
+            self.update()
+        elif chr(keycode) == '3':
+            # Pose 3: Raise head
+            head = self.cDict['head']
+            head.setCurrentAngle(20, head.uAxis)
+            self.update()
+        elif chr(keycode) == '4':
+            # Pose 4: Split fangs
+            fang1 = self.cDict['fang1']
+            fang2 = self.cDict['fang2']
+            fang1.setCurrentAngle(10, fang1.vAxis)
+            fang2.setCurrentAngle(-10, fang2.vAxis)
+            self.update()
+        elif chr(keycode) == '5':
+            # Pose 5: Turn head
+            head = self.cDict['head']
+            head.setCurrentAngle(30, head.vAxis)
             self.update()
 
 
