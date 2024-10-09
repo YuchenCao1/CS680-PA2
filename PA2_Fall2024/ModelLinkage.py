@@ -45,12 +45,6 @@ class ModelLinkage(Component):
         super().__init__(position, display_obj)
         self.contextParent = parent
 
-        ##### TODO 4: Define creature's joint behavior
-        # Requirements:
-        #   1. Set a reasonable rotation range for each joint,
-        #      so that creature won't intersect itself or bend in unnatural ways
-        #   2. Orientation of joint rotations for the left and right parts should mirror each other.
-
         abdomen = Sphere(Point((0, 0, 0)), shaderProg, size=[0.8, 0.8, 0.8], color=Ct.DARKORANGE2, limb=False)
 
         head = Sphere(Point((0, 0, -0.6)), shaderProg, size=[0.5, 0.5, 0.5], color=Ct.DARKORANGE1, limb=False)
@@ -76,6 +70,8 @@ class ModelLinkage(Component):
 
         eye1.addChild(pupil1)
         eye2.addChild(pupil2)
+        head.addChild(eye1)
+        head.addChild(eye2)
 
         fang1 = Cone(Point((0.04, 0.05, -0.55)), shaderProg, size=[0.02, 0.02, 0.1], color=Ct.RED, limb=False)
         fang2 = Cone(Point((-0.04, 0.05, -0.55)), shaderProg, size=[0.02, 0.02, 0.1], color=Ct.RED, limb=False)
@@ -83,8 +79,6 @@ class ModelLinkage(Component):
         fang2.setRotateExtent(fang2.vAxis, -10, 10)
         fang1.rotate(180, fang1.uAxis)
         fang2.rotate(180, fang2.uAxis)
-        head.addChild(eye1)
-        head.addChild(eye2)
         head.addChild(fang1)
         head.addChild(fang2)
 
@@ -140,6 +134,7 @@ class ModelLinkage(Component):
         self.eye2 = eye2
         self.fang1 = fang1
         self.fang2 = fang2
+        self.fangs_current_angle = 0
 
     def create_leg(self, shaderProg, color1, color2):
         upper_leg = Cylinder(Point((0.0, 0, 0.6)), shaderProg, [0.06, 0.06, 0.6], color=color1)
@@ -152,6 +147,24 @@ class ModelLinkage(Component):
 
         upper_leg.addChild(lower_leg)
         return upper_leg
+
+
+    ##### TODO 4: Define creature's joint behavior
+    # Requirements:
+    #   1. Set a reasonable rotation range for each joint,
+    #      so that creature won't intersect itself or bend in unnatural ways
+    #   2. Orientation of joint rotations for the left and right parts should mirror each other.
+    def rotate_fangs(self, angle, axis):
+        new_angle = self.fangs_current_angle + angle
+        new_angle = min(new_angle, 10)
+        new_angle = max(-10, new_angle)
+
+        delta_angle = new_angle - self.fangs_current_angle
+
+        self.fangs_current_angle = new_angle
+
+        self.fang1.rotate(delta_angle, axis)
+        self.fang2.rotate(-delta_angle, axis)
 
     def reset(self):
         super().reset()

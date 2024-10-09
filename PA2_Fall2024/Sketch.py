@@ -498,6 +498,14 @@ class Sketch(CanvasBase):
             eye1.setCurrentAngle(25, eye1.uAxis)
             eye2.setCurrentAngle(25, eye2.uAxis)
             self.update()
+        elif chr(keycode) == 't' or chr(keycode) == 'T':
+            # Joint rotations for the left and right fangs
+            self.model.rotate_fangs(2, self.cDict['fang1'].vAxis)
+            self.update()
+        elif chr(keycode) == 'y' or chr(keycode) == 'Y':
+            # Joint rotations for the left and right fangs
+            self.model.rotate_fangs(-2, self.cDict['fang1'].vAxis)
+            self.update()
 
 
 if __name__ == "__main__":
