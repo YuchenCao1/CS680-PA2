@@ -468,6 +468,8 @@ class Sketch(CanvasBase):
         if chr(keycode) == '1':
             # Pose 1: Back to origin pose
             self.model.reset()
+            self.select_obj_index = -1
+            self.select_axis_index = -1
             self.update()
         elif chr(keycode) == '2':
             # Pose 2: Raise left legs
