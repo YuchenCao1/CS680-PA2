@@ -155,17 +155,18 @@ class ModelLinkage(Component):
 
     def reset(self):
         super().reset()
+        self.head.reset()
+        self.head.setCurrentAngle(0, self.head.vAxis)
+        self.abdomen.reset()
+        self.eye1.reset()
+        self.eye2.reset()
+
+        self.fang1.reset()
+        self.fang2.reset()
+        self.fang1.rotate(180, self.fang1.uAxis)
+        self.fang2.rotate(180, self.fang2.uAxis)
+
         for leg, angle in zip(self.legs, self.initial_leg_angles):
             leg.reset()
             leg.setCurrentAngle(angle, self.abdomen.uAxis)
 
-            self.head.reset()
-            self.head.setCurrentAngle(0, self.head.vAxis)
-
-            self.eye1.reset()
-            self.eye2.reset()
-
-            self.fang1.reset()
-            self.fang2.reset()
-            self.fang1.rotate(180, self.fang1.uAxis)
-            self.fang2.rotate(180, self.fang2.uAxis)
